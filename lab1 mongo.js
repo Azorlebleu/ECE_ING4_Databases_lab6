@@ -84,7 +84,7 @@ db.employees.find({"missions.location":"Chicago"});
 // the employees who did a mission in Lyon and Paris (2 methods)
 db.employees.find({$and:[{"missions.location":"Lyon"}, {"missions.location":"Paris"}]});
 // the employees who did all their missions in Chicago
-db.employees.find({"missions.location":"Chicago"})
+db.employees.find( {{$ne:"Chicago"}:$nin:{"employees.department"} ).pretty();
 // the employees who did a mission for IBM in Chicago
 db.employees.find({$and:[{"missions.company":"IBM"},{"missions.location":"chicago"}]});
 // the employees who did their first mission for IBM
