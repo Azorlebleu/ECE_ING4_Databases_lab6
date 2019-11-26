@@ -58,35 +58,39 @@ db.employees.find({$or:[{comission: null},{comission:{$exists:false}}]},{name:1,
 
 // the name and the commission of the employees whose commission is specified
 // (the field "commission" does exist and it has a non-null value)
-
 db.employees.find(  {$and:[ {comission: {$exists:true}}, {comission:{$ne:null}} ]},{name:1, comission:1,_id:0})
+
 // the name and the commission of the employees with a field "commission"
 // (regardless of its value)
+db.employees.find(   {comission: {$exists:true}},{name:1, comission:1,_id:0})
 
 // the name and the commission of the employees whose commission is null
 // (the field "commission" does exist but it has a null value)
+db.employees.find(   {$and:[{comission: {$exists:true}}, {comission:null}]},{name:1, comission:1,_id:0});
 
 
 // --
 
 // the employees who work in Dallas
-
+db.employees.find( {"department.location":"Dallas"});
 // the employees who don't work in Chicago (2 methods)
-
+db.employees.find( {"department.location":{$ne:"Chicago"}});
+db.employees.find( {"department.location":{$not:/Chicago/}})
 // the employees who did a mission in Chicago
+db.employees.find({"missions.location":"Chicago"});
 
 // the employees who did a mission in Chicago or Dallas  (2 methods)
-
+db.employees.find({"missions.location":"Chicago"});
 // the employees who did a mission in Lyon and Paris (2 methods)
-
+db.employees.find({$and:[{"missions.location":"Lyon"}, {"missions.location":"Paris"}]});
 // the employees who did all their missions in Chicago
-
+db.employees.find({"missions.location":"Chicago"})
 // the employees who did a mission for IBM in Chicago
-
+db.employees.find({$and:[{"missions.company":"IBM"},{"missions.location":"chicago"}]});
 // the employees who did their first mission for IBM
-
+db.employees.find({missions: { $slice: 1 }})
 // the employees who did exactly two missions
-
+db.employees.find
 // --
 
 // the jobs in the company
@@ -98,10 +102,6 @@ db.employees.find(  {$and:[ {comission: {$exists:true}}, {comission:{$ne:null}} 
 // --
 
 // the employees with the same job as Jones'
-
-
-
-
 
 
 
