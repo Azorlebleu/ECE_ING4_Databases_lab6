@@ -45,22 +45,21 @@ db.employees.find({},{}).sort({salary:-1}).limit(1).pretty();
 // --
 
 // the employee names that begin with 'S' and end with 't' (2 methods)
-db.employees.find({name:/S.*t/},{name:1, _id:0} ).pretty()
+db.employees.find({name:/S.*t/},{name:1, _id:0} ).pretty();
 // the employee names that contain a double 'l'
-db.employees.find({name:/.*ll.*/},{name:1, _id:0} ).pretty()
+db.employees.find({name:/.*ll.*/},{name:1, _id:0} ).pretty();
 // the employee names that begins with 'S' and contains either 'o' or 'm' (2 methods)
-db.employees.find({ $or:[ {$and: [{name:/S.*o.*/}, {name:{$not:{$regex:/.*m.*/}} }]}, {$and: [{name:/S.*m.*/}, {name:{$not:{$regex:/.*o.*/}}}]}]}, {name:1, _id:0} ).pretty()
+db.employees.find({ $or:[ {$and: [{name:/S.*o.*/}, {name:{$not:{$regex:/.*m.*/}} }]}, {$and: [{name:/S.*m.*/}, {name:{$not:{$regex:/.*o.*/}}}]}]}, {name:1, _id:0} ).pretty();
 // --
-{ $or:[
-     {$and: [
-         {name:/S.*o.*/}, {name:{$not:{regex:/.*m.*/}} }, {$and: [{name:/S.*m.*/}, {name:{$not:{regex:/.*o.*/}} }]}  ]}
+
 // the name and the commission of the employees whose commission is not specified
 // (the field "commission" does not exists or it has a null value)
-
+db.employees.find({$or:[{comission: null},{comission:{$exists:false}}]},{name:1, comission:1, _id:0});
 
 // the name and the commission of the employees whose commission is specified
 // (the field "commission" does exist and it has a non-null value)
 
+db.employees.find(  {$and:[ {comission: {$exists:true}}, {comission:{$ne:null}} ]},{name:1, comission:1,_id:0})
 // the name and the commission of the employees with a field "commission"
 // (regardless of its value)
 
