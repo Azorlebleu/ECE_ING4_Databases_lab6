@@ -84,26 +84,46 @@ db.employees.find({"missions.location":"Chicago"});
 // the employees who did a mission in Lyon and Paris (2 methods)
 db.employees.find({$and:[{"missions.location":"Lyon"}, {"missions.location":"Paris"}]});
 // the employees who did all their missions in Chicago
-db.employees.find( {{$ne:"Chicago"}:$nin:{"employees.department"} ).pretty();
+db.employees.find({},{"missions.location":1}).map(
+    function(employee){
+        let a = true; 
+        if (employee.missions== undefined)
+        {
+            a=false;
+        }
+        else{
+            for(let i=0;i<employee.missions.length;i++){
+                if(employee.missions[i].location!="Chicago"){
+                    a=false;
+                }
+            }
+        }
+    if(a==true)
+    return(employee)
+}
+).filter(function(row){return(row!=undefined)});
+
+
+db.employees.find({missions:{$not:{$not:{$elemMatch:{location:"Chicago"}}}}},{"missions.location":1})
 // the employees who did a mission for IBM in Chicago
-db.employees.find({$and:[{"missions.company":"IBM"},{"missions.location":"chicago"}]});
+db.employees.find({missions:{"company":"IBM","location":"Chicago"}},{missions:1, name:1, _id:0}).pretty()
 // the employees who did their first mission for IBM
-db.employees.find({missions: { $slice: 1 }})
+db.employees.find({"missions.0.company":"IBM"},{name:1, missions:1})
+db.employees.find({"missions.0":{"company":"IBM"}},{name:1, missions:1})
 // the employees who did exactly two missions
-db.employees.find
+db.employees.find({"missions":{"$size":2}},{name:1, _id:0, missions:1})
 // --
 
 // the jobs in the company
-
+db.employees.distinct("job")
 // the name of the departments
-
+db.employees.distinct("department.name")
 // the cities in which the missions took place
-
+db.employees.distinct("missions.location")
 // --
 
 // the employees with the same job as Jones'
-
-
-
+db.employees.find().map(function(employee){
+    return db.employees.find({name:"Jones"},{job:1, _id:0})})
 
 
